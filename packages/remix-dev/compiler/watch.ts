@@ -7,6 +7,7 @@ import { readConfig } from "../config";
 import { type Manifest } from "../manifest";
 import * as Compiler from "./compiler";
 import type { Context } from "./context";
+import { logThrown } from "./utils/error";
 
 function isEntryPoint(config: RemixConfig, file: string): boolean {
   let appFile = path.relative(config.appDirectory, file);
@@ -54,8 +55,8 @@ export async function watch(
 
     try {
       config = await reloadConfig(config.rootDirectory);
-    } catch (error: unknown) {
-      options.onCompileFailure?.(error as Error);
+    } catch (thrown: unknown) {
+      logThrown(thrown);
       return;
     }
 
@@ -99,8 +100,8 @@ export async function watch(
 
       try {
         config = await reloadConfig(config.rootDirectory);
-      } catch (error: unknown) {
-        options.onCompileFailure?.(error as Error);
+      } catch (thrown: unknown) {
+        logThrown(thrown);
         return;
       }
 
